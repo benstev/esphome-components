@@ -197,7 +197,9 @@ void HormannCover::do_one_action() {
   }
   this->publish_state(false);
 
-  this->start_dir_time_ = millis();
+  const uint32_t now = millis();
+  this->start_dir_time_ = now;
+  this->last_recompute_time_ = now;
 }
 
 }  // namespace hormann
