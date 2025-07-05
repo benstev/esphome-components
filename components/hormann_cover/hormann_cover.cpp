@@ -109,7 +109,7 @@ void HormannCover::open_endstop_released() {
   ESP_LOGD(TAG, "Open endstop released.");
   this->last_recompute_time_ = millis();
 
-   ESP_LOGD(TAG, "ENDSTOP. Pos %.2f.", this->position);
+  ESP_LOGD(TAG, "OPEN ENDSTOP RELEASED. Pos %.2f.", this->position);
 
   this->current_operation = COVER_OPERATION_CLOSING;
   this->last_dir = COVER_OPERATION_CLOSING;
@@ -131,6 +131,8 @@ void HormannCover::close_endstop_reached() {
 void HormannCover::close_endstop_released() {
   ESP_LOGD(TAG, "Close endstop released.");
   this->last_recompute_time_ = millis();
+
+  ESP_LOGD(TAG, "CLOSE ENDSTOP RELEASED. Pos %.2f.", this->position);
 
   this->current_operation = COVER_OPERATION_OPENING;
   this->last_dir = COVER_OPERATION_OPENING;
@@ -158,9 +160,16 @@ void HormannCover::recompute_position() {
       return;
   }
 
-  const uint32_t now = millis();
+    ESP_LOGD(TAG, "RECOMP IN. Pos %.2f.", this->position);
+
+const uint32_t now = millis();
   this->position += dir * (now - this->last_recompute_time_) / action_dur;
+
+  ESP_LOGD(TAG, "RECOMP OUT. Pos %.2f.", this->position);
+
   this->position = clamp(position, 0.0f, 1.0f);
+
+
   this->last_recompute_time_ = now;
 }
 
