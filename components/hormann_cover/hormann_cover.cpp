@@ -49,7 +49,7 @@ void HormannCover::control(const CoverCall &call) {
     }
   }
   if (call.get_stop()) {
-    ESP_LOGD("CustomGarageCover", "Stop command received.");
+    ESP_LOGD(TAG, "Stop command received.");
 
     if (this->current_operation != COVER_OPERATION_IDLE) {
       this->target_operation = TARGET_OPERATION_IDLE;
@@ -59,7 +59,7 @@ void HormannCover::control(const CoverCall &call) {
 
 // This will be called by App.loop()
 void HormannCover::loop() {
-  const uint32_t now = App.get_loop_component_start_time();
+  const uint32_t now = millis();
 
   // perform one action if target operation different than current operation
   if (this->target_operation != TARGET_OPERATION_NONE &&
@@ -159,6 +159,8 @@ void HormannCover::recompute_position() {
   const uint32_t now = millis();
   this->position += dir * (now - this->last_recompute_time_) / action_dur;
   this->position = clamp(position, 0.0f, 1.0f);
+
+      ESP_LOGD(TAG, "RECOMPUTED. Pos %.2fs.", this->position);
 
   this->last_recompute_time_ = now;
 }
