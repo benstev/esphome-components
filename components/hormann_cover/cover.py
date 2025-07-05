@@ -9,15 +9,18 @@ from esphome.const import (
     CONF_OPEN_DURATION,
     CONF_OPEN_ENDSTOP,
     CONF_INTERVAL,
-    CONF_TILT_ACTION,
+    # CONF_TILT_ACTION,
     CONF_MAX_DURATION,
 )
+
+ACTUATE_ACTION = "actuate_action"
+
 hormann_ns = cg.esphome_ns.namespace("hormann")
 HormannCover = hormann_ns.class_("HormannCover", cover.Cover, cg.Component)
 
 CONFIG_SCHEMA = cover.cover_schema(HormannCover).extend(
     {
-        cv.Required(CONF_TILT_ACTION): automation.validate_automation(single=True),
+        cv.Required(ACTUATE_ACTION): automation.validate_automation(single=True),
         cv.Required(CONF_OPEN_ENDSTOP): cv.use_id(binary_sensor.BinarySensor),
         cv.Required(CONF_OPEN_DURATION): cv.positive_time_period_milliseconds,
         cv.Required(CONF_CLOSE_ENDSTOP): cv.use_id(binary_sensor.BinarySensor),
@@ -28,14 +31,13 @@ CONFIG_SCHEMA = cover.cover_schema(HormannCover).extend(
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
-
 async def to_code(config):
     var = await cover.new_cover(config)
     await cg.register_component(var, config)
 
 
     await automation.build_automation(
-        var.get_tilt_trigger(), [], config[CONF_TILT_ACTION]
+        var.get_actuate_trigger(), [], config[ACTUATE_ACTION]
     )
 
     bin = await cg.get_variable(config[CONF_OPEN_ENDSTOP])
