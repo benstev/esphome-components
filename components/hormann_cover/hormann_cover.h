@@ -71,7 +71,6 @@ class HormannCover : public cover::Cover, public Component {
   uint32_t last_recompute_time_{0};
   uint32_t start_dir_time_{0};
   uint32_t last_publish_time_{0};
-  float target_position_{0};
   uint32_t switch_activation_interval{0};
   uint32_t last_activation_{0};
 

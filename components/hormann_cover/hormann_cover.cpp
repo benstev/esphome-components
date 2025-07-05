@@ -55,28 +55,6 @@ void HormannCover::control(const CoverCall &call) {
       this->target_operation = TARGET_OPERATION_IDLE;
     }
   }
-
-  // ------------
-
-  // if (call.get_position().has_value()) {
-  //   auto pos = *call.get_position();
-
-  //   ESP_LOGD(TAG, "Position command received: %0.2f.", pos);
-
-  //   if (pos != this->position) {
-  //     // not at target
-
-  //     auto op = pos < this->position ? COVER_OPERATION_CLOSING : COVER_OPERATION_OPENING;
-  //     this->start_direction_(op);
-  //     this->publish_state(false);
-  //   }
-  // }
-
-  // if (call.get_stop()) {
-  //   ESP_LOGD(TAG, "Stop command received.");
-  //   this->start_direction_(COVER_OPERATION_IDLE);
-  //   this->publish_state(false);
-  // }
 }
 
 // This will be called by App.loop()
@@ -104,7 +82,6 @@ void HormannCover::loop() {
 
   // send current position every second
   if (this->current_operation != COVER_OPERATION_IDLE && (now - this->last_publish_time_) > 1000) {
-    ESP_LOGD(TAG, "Loop publish. Pos  %.2f.", this->position);
     this->publish_state(false);
     this->last_publish_time_ = now;
   }
@@ -113,31 +90,11 @@ void HormannCover::loop() {
     ESP_LOGD(TAG, "Max duration reached. Cover motion must have been interrupted manually.");
     this->start_dir_time_ = now;
   }
-
-  //---------
-
-  // const uint32_t now = App.get_loop_component_start_time();
-
-  // this->check_endstops_(now);
-
-  // // recompute position every loop cycle
-
-  // if (this->current_operation == COVER_OPERATION_IDLE)
-  //   return;
-
-  // this->recompute_position();
-
-  // // send current position every second
-  // if (this->current_operation != COVER_OPERATION_IDLE && (now - this->last_publish_time_) > 1000) {
-  //   this->publish_state(false);
-  //   this->last_publish_time_ = now;
-  // }
 }
 
 void HormannCover::open_endstop_reached() {
   float dur = (millis() - this->start_dir_time_) / 1e3f;
   ESP_LOGD(TAG, "Open endstop reached. Took %.1fs.", dur);
-  // ESP_LOGD(TAG, "Open endstop reached.");
 
   this->target_operation = TARGET_OPERATION_NONE;
 
@@ -159,7 +116,6 @@ void HormannCover::open_endstop_released() {
 void HormannCover::close_endstop_reached() {
   float dur = (millis() - this->start_dir_time_) / 1e3f;
   ESP_LOGD(TAG, "Close endstop reached. Took %.1fs.", dur);
-  // ESP_LOGD(TAG, "Close endstop reached.");
 
   this->target_operation = TARGET_OPERATION_NONE;
 
@@ -178,58 +134,6 @@ void HormannCover::close_endstop_released() {
   this->publish_state(false);
   this->last_recompute_time_ = millis();
 }
-
-// void HormannCover::check_endstops_(uint32_t now) {
-//   if (this->is_open_() && this->is_closed_()) {
-//     ESP_LOGE(TAG, "Error: both endstops fired simultaneously.");
-//   }
-
-//   if (this->is_open_()) {
-//     if (this->current_operation == COVER_OPERATION_OPENING) {
-//       float dur = (now - this->start_dir_time_) / 1e3f;
-//       ESP_LOGD(TAG, "Open endstop reached. Took %.1fs.", dur);
-//     }
-
-//     this->current_operation = COVER_OPERATION_IDLE;
-//     if (this->position != COVER_OPEN) {
-//       this->position = COVER_OPEN;
-//       this->publish_state(false);
-//     }
-
-//   } else if (this->is_closed_()) {
-//     if (this->current_operation == COVER_OPERATION_CLOSING) {
-//       float dur = (now - this->start_dir_time_) / 1e3f;
-//       ESP_LOGD(TAG, "Close endstop reached. Took %.1fs.", dur);
-//     }
-
-//     this->current_operation = COVER_OPERATION_IDLE;
-//     if (this->position != COVER_CLOSED) {
-//       this->position = COVER_CLOSED;
-//       this->publish_state(false);
-//     }
-
-//   } else if (now - this->start_dir_time_ > this->max_duration_) {
-//     ESP_LOGE(TAG, "Max duration reached. Stopping cover.");
-//     this->start_direction_(COVER_OPERATION_IDLE);
-//     this->publish_state(false);
-//   }
-// }
-
-// void HormannCover::start_direction_(CoverOperation dir) {
-//   if (dir == this->current_operation)
-//     return;
-
-//   this->recompute_position();
-
-//   ESP_LOGD(TAG, "Send gate actuate signal.");
-//   this->actuate_trigger_->trigger();
-
-//   this->current_operation = dir;
-
-//   const uint32_t now = millis();
-//   this->start_dir_time_ = now;
-//   this->last_recompute_time_ = now;
-// }
 
 // recalculates door position
 void HormannCover::recompute_position() {
@@ -251,41 +155,11 @@ void HormannCover::recompute_position() {
       return;
   }
 
-  ESP_LOGD(TAG, "RECOMP. Pos before %.2f.", this->position);
   const uint32_t now = millis();
   this->position += dir * (now - this->last_recompute_time_) / action_dur;
-
-  ESP_LOGD(TAG, "RECOMP. Pos before  %.2f.", this->position);
-
   this->position = clamp(position, 0.0f, 1.0f);
 
   this->last_recompute_time_ = now;
-
-  //-----------
-
-  // if (this->current_operation == COVER_OPERATION_IDLE)
-  //   return;
-
-  // float dir;
-  // float action_dur;
-  // switch (this->current_operation) {
-  //   case COVER_OPERATION_OPENING:
-  //     dir = 1.0f;
-  //     action_dur = this->open_duration_;
-  //     break;
-  //   case COVER_OPERATION_CLOSING:
-  //     dir = -1.0f;
-  //     action_dur = this->close_duration_;
-  //     break;
-  //   default:
-  //     return;
-  // }
-
-  // const uint32_t now = millis();
-  // this->position += dir * (now - this->last_recompute_time_) / action_dur;
-  // this->position = clamp(this->position, 0.0f, 1.0f);
-
-  // this->last_recompute_time_ = now;
 }
 
 // Actuate the door switch and update state
