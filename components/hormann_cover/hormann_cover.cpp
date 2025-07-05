@@ -109,6 +109,8 @@ void HormannCover::open_endstop_released() {
   ESP_LOGD(TAG, "Open endstop released.");
   this->last_recompute_time_ = millis();
 
+   ESP_LOGD(TAG, "ENDSTOP. Pos %.2f.", this->position);
+
   this->current_operation = COVER_OPERATION_CLOSING;
   this->last_dir = COVER_OPERATION_CLOSING;
   this->publish_state(false);
