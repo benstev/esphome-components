@@ -82,7 +82,7 @@ void HormannCover::loop() {
 
   // send current position every second
   if (this->current_operation != COVER_OPERATION_IDLE && (now - this->last_publish_time_) > 1000) {
-    ESP_LOGD(TAG, "LOOP PUBLISH. Pos %.2fs.", this->position);
+    ESP_LOGD(TAG, "LOOP PUBLISH. Pos %.2f.", this->position);
     this->publish_state(false);
     this->last_publish_time_ = now;
   }
@@ -156,11 +156,12 @@ void HormannCover::recompute_position() {
       return;
   }
 
+  ESP_LOGD(TAG, "BEFORE RECOMPUTED. Pos %.2f.", this->position);
   const uint32_t now = millis();
   this->position += dir * (now - this->last_recompute_time_) / action_dur;
   this->position = clamp(position, 0.0f, 1.0f);
 
-      ESP_LOGD(TAG, "RECOMPUTED. Pos %.2fs.", this->position);
+  ESP_LOGD(TAG, "RECOMPUTED. Pos %.2f.", this->position);
 
   this->last_recompute_time_ = now;
 }
