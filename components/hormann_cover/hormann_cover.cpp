@@ -156,13 +156,9 @@ void HormannCover::recompute_position() {
       return;
   }
 
-  ESP_LOGD(TAG, "BEFORE RECOMPUTED. Pos %.2f.", this->position);
   const uint32_t now = millis();
   this->position += dir * (now - this->last_recompute_time_) / action_dur;
   this->position = clamp(position, 0.0f, 1.0f);
-
-  ESP_LOGD(TAG, "RECOMPUTED. Pos %.2f.", this->position);
-
   this->last_recompute_time_ = now;
 }
 
