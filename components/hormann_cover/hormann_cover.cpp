@@ -40,7 +40,7 @@ void HormannCover::control(const CoverCall &call) {
     // get requested position
     float pos = *call.get_position();
 
-    ESP_LOGD("CustomGarageCover", "Position command received: %0.2f", pos);
+    ESP_LOGD(TAG, "Position command received: %0.2f.", pos);
 
     if (pos != this->position) {
       // not at target
@@ -86,6 +86,8 @@ void HormannCover::loop() {
   // perform one action if target operation different than current operation
   if (this->target_operation != TARGET_OPERATION_NONE &&
       (static_cast<uint8_t>(this->target_operation) != static_cast<uint8_t>(this->current_operation))) {
+        ESP_LOGD(TAG, "Target operation pending.");
+
     // only activate door if time greater than activation interval
     if (now - this->last_activation_ > switch_activation_interval) {
       this->do_one_action();
@@ -94,7 +96,7 @@ void HormannCover::loop() {
     }
 
   } else if (static_cast<uint8_t>(this->target_operation) == static_cast<uint8_t>(this->current_operation)) {
-    ESP_LOGD(TAG, "Target operation reached.");
+    ESP_LOGD(TAG, "Target operation engaged.");
     this->target_operation = TARGET_OPERATION_NONE;
   }
 
@@ -102,6 +104,7 @@ void HormannCover::loop() {
 
   // send current position every second
   if (this->current_operation != COVER_OPERATION_IDLE && (now - this->last_publish_time_) > 1000) {
+      ESP_LOGD(TAG, "Loop publish. Pos %d.", this->position);
     this->publish_state(false);
     this->last_publish_time_ = now;
   }
