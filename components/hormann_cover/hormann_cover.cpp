@@ -82,6 +82,7 @@ void HormannCover::loop() {
 
   // send current position every second
   if (this->current_operation != COVER_OPERATION_IDLE && (now - this->last_publish_time_) > 1000) {
+    ESP_LOGD(TAG, "LOOP PUBLISH. Pos %.2fs.", this->position);
     this->publish_state(false);
     this->last_publish_time_ = now;
   }
