@@ -86,7 +86,7 @@ void HormannCover::loop() {
   // perform one action if target operation different than current operation
   if (this->target_operation != TARGET_OPERATION_NONE &&
       (static_cast<uint8_t>(this->target_operation) != static_cast<uint8_t>(this->current_operation))) {
-        ESP_LOGD(TAG, "Target operation pending.");
+    ESP_LOGD(TAG, "Target operation pending.");
 
     // only activate door if time greater than activation interval
     if (now - this->last_activation_ > switch_activation_interval) {
@@ -104,7 +104,7 @@ void HormannCover::loop() {
 
   // send current position every second
   if (this->current_operation != COVER_OPERATION_IDLE && (now - this->last_publish_time_) > 1000) {
-      ESP_LOGD(TAG, "Loop publish. Pos %d.", this->position);
+    ESP_LOGD(TAG, "Loop publish. Pos  %.2f.", this->position);
     this->publish_state(false);
     this->last_publish_time_ = now;
   }
@@ -251,8 +251,12 @@ void HormannCover::recompute_position() {
       return;
   }
 
+  ESP_LOGD(TAG, "RECOMP. Pos before %.2f.", this->position);
   const uint32_t now = millis();
-  this->position += (dir * (now - this->last_recompute_time_)) / action_dur;
+  this->position += dir * (now - this->last_recompute_time_) / action_dur;
+
+  ESP_LOGD(TAG, "RECOMP. Pos before  %.2f.", this->position);
+
   this->position = clamp(position, 0.0f, 1.0f);
 
   this->last_recompute_time_ = now;
