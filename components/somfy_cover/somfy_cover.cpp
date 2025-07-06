@@ -175,7 +175,12 @@ void SomfyCover::start_direction_(CoverOperation dir) {
   }
 
   this->current_operation = dir;
-  this->last_recompute_time_ =millis();
+  this->last_recompute_time_ = millis();
+}
+
+void SomfyCover::program() {
+  ESP_LOGI(TAG, "PROG <%s>", this->name_);
+  sendSomfyCommand(Command::Prog);
 }
 
 }  // namespace somfy

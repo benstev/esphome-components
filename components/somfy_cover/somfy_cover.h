@@ -30,6 +30,7 @@ class SomfyCover : public cover::Cover, public Component {
   cover::CoverTraits get_traits() override;
 
   void set_cc1101(cc1101::CC1101 *cc) { this->cc1101_ = cc; }
+  void program();
 
  protected:
   int storage_record_;
