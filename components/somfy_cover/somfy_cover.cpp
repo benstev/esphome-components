@@ -1,6 +1,5 @@
 #include "esphome/core/log.h"
 #include "esphome/core/application.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "somfy_cover.h"
 #include <EEPROMRollingCodeStorage.h>
 
