@@ -36,7 +36,6 @@ class SomfyCover : public cover::Cover, public Component {
   uint32_t remote_code_;
   float open_duration_;
   float close_duration_;
-
   SomfyRemote *remote;
 
   uint32_t last_recompute_time_{0};

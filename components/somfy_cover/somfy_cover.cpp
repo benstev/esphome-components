@@ -143,7 +143,7 @@ inline const char *CmdToString(Command v) {
 }
 
 void SomfyCover::sendSomfyCommand(Command command) {
-  ESP_LOGI(TAG, "send somfy command <%s> to <%s>", CmdToString(command), this->name_);
+  ESP_LOGI(TAG, "send somfy command <%s> to <%s>", CmdToString(command), this->get_name());
 
   this->cc1101_->xmit();
   this->remote->sendCommand(command);
