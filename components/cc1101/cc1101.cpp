@@ -1,5 +1,4 @@
 #include "esphome/core/log.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
 #include "cc1101.h"
 
 #include <ELECHOUSE_CC1101_SRC_DRV.h>
