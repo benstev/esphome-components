@@ -2,7 +2,6 @@
 
 #include "esphome/core/component.h"
 #include "esphome/components/cover/cover.h"
-#include "esphome/components/binary_sensor/binary_sensor.h"
 // #include "esphome/../config/components/cc1101/cc1101.h"
 #include "esphome/components/cc1101/cc1101.h"
 
