@@ -74,7 +74,6 @@ void SomfyCover::loop() {
 
   if (now - this->last_publish_time_ > 1000) {
     this->publish_state(false);
-    ESP_LOGD(TAG, "Loop %s, pos: %f", this->name_, this->position);
     this->last_publish_time_ = now;
   }
 }
