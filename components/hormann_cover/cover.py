@@ -9,7 +9,6 @@ from esphome.const import (
     CONF_OPEN_DURATION,
     CONF_OPEN_ENDSTOP,
     CONF_INTERVAL,
-    # CONF_TILT_ACTION,
     CONF_MAX_DURATION,
 )
 

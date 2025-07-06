@@ -28,6 +28,8 @@ class HormannCover : public cover::Cover, public Component {
   void dump_config() override;
   float get_setup_priority() const override;
 
+  cover::CoverTraits get_traits() override;
+
   Trigger<> *get_actuate_trigger() const { return this->actuate_trigger_; }
 
   void set_open_endstop(binary_sensor::BinarySensor *open_endstop) { this->open_endstop_ = open_endstop; }
@@ -43,19 +45,15 @@ class HormannCover : public cover::Cover, public Component {
   void close_endstop_reached();
   void close_endstop_released();
 
-  cover::CoverTraits get_traits() override;
-
  protected:
   void control(const cover::CoverCall &call) override;
 
   bool is_open_() const { return this->open_endstop_->state; }
   bool is_closed_() const { return this->close_endstop_->state; }
 
-  CoverTargetOperation target_operation{TARGET_OPERATION_NONE};  // received action to execute
+  CoverTargetOperation target_operation{TARGET_OPERATION_NONE};
 
-  // void start_direction_(cover::CoverOperation dir);
   void recompute_position();
-  // void check_endstops_(uint32_t);
   void do_one_action();
 
   binary_sensor::BinarySensor *open_endstop_;   // binary sensor to detect when door is full open
@@ -67,14 +65,13 @@ class HormannCover : public cover::Cover, public Component {
   uint32_t close_duration_;  // time the door needs to fully close
 
   uint32_t max_duration_{UINT32_MAX};
-
   uint32_t last_recompute_time_{0};
   uint32_t start_dir_time_{0};
   uint32_t last_publish_time_{0};
   uint32_t switch_activation_interval{0};
   uint32_t last_activation_{2000};
 
-  cover::CoverOperation last_dir;  // last door direction (open/close)
+  cover::CoverOperation last_dir;
 };
 
 }  // namespace hormann

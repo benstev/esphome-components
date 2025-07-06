@@ -40,7 +40,7 @@ void HormannCover::control(const CoverCall &call) {
     // get requested position
     float pos = *call.get_position();
 
-    ESP_LOGD(TAG, "Position command received: %0.2f.", pos);
+    ESP_LOGI(TAG, "Position command received: %0.2f.", pos);
 
     if (pos != this->position) {
       // not at target
@@ -49,7 +49,7 @@ void HormannCover::control(const CoverCall &call) {
     }
   }
   if (call.get_stop()) {
-    ESP_LOGD(TAG, "Stop command received.");
+    ESP_LOGI(TAG, "Stop command received.");
 
     if (this->current_operation != COVER_OPERATION_IDLE) {
       this->target_operation = TARGET_OPERATION_IDLE;
@@ -82,13 +82,12 @@ void HormannCover::loop() {
 
   // send current position every second
   if (this->current_operation != COVER_OPERATION_IDLE && (now - this->last_publish_time_) > 1000) {
-    // ESP_LOGD(TAG, "LOOP PUBLISH. Pos %.2f.", this->position);
     this->publish_state(false);
     this->last_publish_time_ = now;
   }
 
   if (now - this->start_dir_time_ > this->max_duration_) {
-    ESP_LOGD(TAG, "Max duration reached. Cover motion must have been interrupted manually.");
+    ESP_LOGW(TAG, "Max duration reached. Cover motion must have been interrupted manually.");
     this->start_dir_time_ = now;
   }
 }
@@ -108,8 +107,6 @@ void HormannCover::open_endstop_reached() {
 void HormannCover::open_endstop_released() {
   ESP_LOGD(TAG, "Open endstop released.");
   this->last_recompute_time_ = millis();
-
-  ESP_LOGD(TAG, "OPEN ENDSTOP RELEASED. Pos %.2f.", this->position);
 
   this->current_operation = COVER_OPERATION_CLOSING;
   this->last_dir = COVER_OPERATION_CLOSING;
@@ -131,8 +128,6 @@ void HormannCover::close_endstop_reached() {
 void HormannCover::close_endstop_released() {
   ESP_LOGD(TAG, "Close endstop released.");
   this->last_recompute_time_ = millis();
-
-  ESP_LOGD(TAG, "CLOSE ENDSTOP RELEASED. Pos %.2f.", this->position);
 
   this->current_operation = COVER_OPERATION_OPENING;
   this->last_dir = COVER_OPERATION_OPENING;
@@ -160,20 +155,8 @@ void HormannCover::recompute_position() {
       return;
   }
 
-  // ESP_LOGD(TAG, "RECOMP IN. Pos %.2f.", this->position);
-
   const uint32_t now = millis();
   this->position += dir * (now - this->last_recompute_time_) / action_dur;
-
-  // ESP_LOGD(TAG, "RECOMP open_duration_ %d.", this->open_duration_);
-  // ESP_LOGD(TAG, "RECOMP IN. close_duration_ %d.", this->close_duration_);
-  // ESP_LOGD(TAG, "RECOMP IN. dir %.2f", dir);
-
-  // ESP_LOGD(TAG, "RECOMP now %d.", now);
-  // ESP_LOGD(TAG, "RECOMP last_recompute_time_ %d.", this->last_recompute_time_);
-
-  // ESP_LOGD(TAG, "RECOMP OUT. Pos %.2f.", this->position);
-
   this->position = clamp(position, 0.0f, 1.0f);
 
   this->last_recompute_time_ = now;
