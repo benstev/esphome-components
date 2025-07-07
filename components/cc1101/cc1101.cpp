@@ -13,7 +13,10 @@ void CC1101::setup() {
   ELECHOUSE_cc1101.setMHZ(CC1101_FREQUENCY);
 }
 
-void CC1101::dump_config() { ESP_LOGCONFIG(TAG, "Somfy Remote"); }
+void CC1101::dump_config() {
+  ESP_LOGCONFIG(TAG, "CC1101:"); 
+  ESP_LOGCONFIG(TAG, "  Frequency: %.2f MHz", CC1101_FREQUENCY);
+  }
 
 void CC1101::xmit() {
   ESP_LOGD(TAG, "enable xmit.");
